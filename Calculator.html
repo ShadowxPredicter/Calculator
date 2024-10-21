@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f0f0f0, #d9d9d9);
+            font-family: "Arial", sans-serif;
+            transition: background-color 0.3s;
+        }
+
+        .calculator {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            transition: background-color 0.3s;
+            animation: fadeIn 0.5s;
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            justify-content: space-between; /* Space between calculator and footer */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #display {
+            width: 100%;
+            height: 60px;
+            text-align: right;
+            font-size: 32px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            color: #333;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            height: 60px;
+            font-size: 24px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #dcdcdc;
+            transform: scale(1.05);
+        }
+
+        .equal {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .equal:hover {
+            background-color: #45a049;
+        }
+
+        .theme-toggle {
+            grid-column: span 4;
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .theme-toggle:hover {
+            background-color: #1e88e5;
+        }
+
+        /* Dark Mode Styles */
+        body.dark {
+            background: linear-gradient(135deg, #333, #444);
+        }
+
+        body.dark .calculator {
+            background-color: #555;
+        }
+
+        body.dark #display {
+            background-color: #666;
+            color: #fff;
+        }
+
+        body.dark button {
+            background-color: #777;
+            color: #fff;
+        }
+
+        body.dark button:hover {
+            background-color: #888;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            #display {
+                font-size: 24px;
+            }
+
+            button {
+                font-size: 20px;
+                height: 50px;
+            }
+        }
+
+        /* Footer Style */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator">
+        <input type="text" id="display" disabled />
+        <div class="buttons">
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button onclick="appendToDisplay('/')">÷</button>
+
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button onclick="appendToDisplay('*')">×</button>
+
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button onclick="appendToDisplay('-')">-</button>
+
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="appendToDisplay('0')">0</button>
+            <button class="equal" onclick="calculate()">=</button>
+            <button onclick="appendToDisplay('+')">+</button>
+
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </div>
+        <div class="footer">MADE BY VISHNULAL</div>
+    </div>
+    <script>
+        let currentInput = "";
+
+        function appendToDisplay(value) {
+            // Prevent consecutive operators
+            if (['+', '-', '*', '/'].includes(currentInput.slice(-1)) && ['+', '-', '*', '/'].includes(value)) {
+                return;
+            }
+            currentInput += value;
+            document.getElementById("display").value = currentInput;
+        }
+
+        function calculate() {
+            try {
+                currentInput = eval(currentInput.replace(/×/g, "*").replace(/÷/g, "/"));
+                document.getElementById("display").value = currentInput;
+            } catch (e) {
+                document.getElementById("display").value = "Invalid Input";
+                currentInput = ""; // Clear current input after error
+            }
+        }
+
+        function clearDisplay() {
+            currentInput = "";
+            document.getElementById("display").value = "";
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (event) => {
+            const key = event.key;
+            if ('0123456789+-*/'.includes(key)) {
+                appendToDisplay(key);
+            } else if (key === 'Enter') {
+                calculate();
+            } else if (key === 'Backspace') {
+                clearDisplay();
+            }
+        });
+    </script>
+</body>
+
+</html>
